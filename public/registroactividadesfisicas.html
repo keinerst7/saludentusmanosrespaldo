@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro de Actividad Física - Salud en tus Manos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #CFE3E1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #000000;
+            margin: 0 0 10px 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #07B4BA;
+            text-align: left;
+        }
+
+        input, select, button {
+            margin-top: 5px;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #39D0CB;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #07B4BA;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #39D0CB;
+        }
+
+        #log {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #log p {
+            background: #39D0CB;
+            color: #000000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Salud en tus Manos</h1>
+        <h2>Registro de Actividad Física</h2>
+        <form id="activity-form">
+            <label for="activity">Tipo de Actividad:</label>
+            <input type="text" id="activity" name="activity" required />
+
+            <label for="duration">Duración (minutos):</label>
+            <input type="number" id="duration" name="duration" required min="1" />
+
+            <label for="intensity">Intensidad:</label>
+            <select id="intensity" name="intensity">
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+            </select>
+
+            <label for="calories">Calorías Quemadas:</label>
+            <input type="number" id="calories" name="calories" required min="0" />
+
+            <button type="submit">Registrar Actividad</button>
+        </form>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        document.getElementById("activity-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Ejemplo de idusuario fijo, modificar según tu lógica de usuario
+            const idusuario = 1;
+
+            const tipoactividad = document.getElementById("activity").value.trim();
+            const duracionminutos = parseInt(document.getElementById("duration").value);
+            const intensidad = document.getElementById("intensity").value;
+            const caloriasquemadas = parseInt(document.getElementById("calories").value);
+
+            const data = {
+                idusuario,
+                tipoactividad,
+                duracionminutos,
+                intensidad,
+                caloriasquemadas
+            };
+
+            fetch('http://localhost:3000/actfisicas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                const log = document.getElementById("log");
+                if (result.error) {
+                    log.innerHTML += `<p style="color:red;">${result.error}</p>`;
+                } else {
+                    log.innerHTML += `<p>Actividad registrada: ${tipoactividad} - ${duracionminutos} min - Intensidad: ${intensidad} - ${caloriasquemadas} cal</p>`;
+                }
+                document.getElementById("activity-form").reset();
+            })
+            .catch(error => {
+                const log = document.getElementById("log");
+                log.innerHTML += `<p style="color:red;">Error al registrar actividad: ${error}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
