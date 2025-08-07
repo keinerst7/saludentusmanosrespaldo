@@ -40,8 +40,6 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
     phone: '+1234567890',
     location: 'Ciudad, País',
     age: '30',
-    weight: '70',
-    height: '170',
     goal: 'Mantener un estilo de vida saludable',
     bio: 'Comprometido con mi bienestar integral y crecimiento personal.',
     joinDate: '2024-01-01'
@@ -66,18 +64,7 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
-  const calculateBMI = () => {
-    const weight = parseFloat(profileData.weight);
-    const height = parseFloat(profileData.height) / 100;
-    return (weight / (height * height)).toFixed(1);
-  };
 
-  const getBMICategory = (bmi: number) => {
-    if (bmi < 18.5) return { category: 'Bajo peso', color: 'text-blue-600' };
-    if (bmi < 25) return { category: 'Peso normal', color: 'text-green-600' };
-    if (bmi < 30) return { category: 'Sobrepeso', color: 'text-yellow-600' };
-    return { category: 'Obesidad', color: 'text-red-600' };
-  };
 
   return (
     <div className="space-y-6">

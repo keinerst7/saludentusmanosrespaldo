@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Lock, User, Eye, EyeOff, Apple, Target, Heart } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Apple, Target, Heart, CheckCircle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface LoginPageProps {
   onLogin: (email: string) => void;
@@ -13,6 +14,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState<'user' | 'admin' | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -51,6 +53,11 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!acceptedTerms) {
+      alert('Debes aceptar los términos y condiciones para continuar');
+      return;
+    }
     
     if (!formData.email || !formData.password) {
       alert('Por favor, completa todos los campos requeridos');
@@ -97,26 +104,62 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary to-muted p-4">
-      <div className="w-full max-w-md">
-        {/* Logo y título principal */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#ECF3F1] to-[#CFE3E1] p-4">
+      <div className="bg-[#FFFFFF] p-8 rounded-lg shadow-lg w-full max-w-md border border-[#76BFAC]/20">
+        {/* Logo principal */}
         <div className="text-center mb-8">
-          <img 
-            src="/lovable-uploads/e4c15637-8aff-495d-8a19-a3a1f6c659fa.png" 
-            alt="Salud en tus Manos" 
-            className="w-20 h-20 mx-auto mb-4"
-          />
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Salud en tus Manos
-          </h1>
-          <p className="text-muted-foreground">
-            Tu bienestar integral en una aplicación
-          </p>
+          <div className="w-36 h-36 bg-[#FFFFFF] rounded-full flex items-center justify-center shadow-lg mx-auto mb-4 border-2 border-[#CFE3E1]">
+            <img 
+              src="/public/lovable-uploads/e4c15637-8aff-495d-8a19-a3a1f6c659fa-removebg-preview (2).png"
+              alt="Salud en tus Manos"
+              className="w-28 h-28 object-contain"
+            />
+          </div>
         </div>
 
+        {/* Términos y condiciones */}
+        {!acceptedTerms && (
+          <Card className="shadow-lg border-0 bg-card/95 backdrop-blur mb-6">
+            <CardHeader className="txt-center">
+              <CardTitle className="text-xl text-foreground">
+                Términos y Condiciones
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-sm text-muted-foreground space-y-2">
+                <p>Bienvenido a "Salud en tus Manos". Al usar esta aplicación, aceptas:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Usar la aplicación de manera responsable y para fines de bienestar personal</li>
+                  <li>Proporcionar información veraz en tus registros de salud</li>
+                  <li>Entender que esta app es complementaria y no reemplaza consultas médicas</li>
+                  <li>Respetar la privacidad de otros usuarios</li>
+                </ul>
+              </div>
+              <div className="flex items-start space-x-2 pt-4">
+                <Checkbox 
+                  id="terms" 
+                  checked={acceptedTerms}
+                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                />
+                <label htmlFor="terms" className="text-sm text-foreground leading-none">
+                  Acepto los Términos y Condiciones de la aplicación Salud en tus Manos
+                </label>
+              </div>
+              <Button
+                onClick={() => setAcceptedTerms(true)}
+                disabled={!acceptedTerms}
+                className="w-full bg-primary hover:bg-primary/90"
+              >
+                Continuar
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Selección de tipo de perfil */}
-        {!isLogin && !selectedProfile && (
+        {acceptedTerms && !isLogin && !selectedProfile && (
           <div className="space-y-6">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-foreground mb-2">
@@ -174,7 +217,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
         )}
 
         {/* Card de login/registro */}
-        {(isLogin || selectedProfile) && (
+        {acceptedTerms && (isLogin || selectedProfile) && (
           <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl text-foreground">
@@ -273,8 +316,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                   </div>
                 </div>
 
-                {/* Corregir la condición problemática */}
-                {(selectedProfile === 'admin') && (
+                {selectedProfile === 'admin' && (
                   <div className="space-y-2">
                     <Label htmlFor="document" className="text-sm font-medium">
                       Documento de identidad
@@ -366,8 +408,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                 </Button>
               </form>
             </CardContent>
-            
-            <div className="px-6 pb-6">
+            {(isLogin || selectedProfile) && (
               <div className="text-center">
                 <button
                   type="button"
@@ -384,59 +425,72 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                   }
                 </button>
               </div>
+            )}
 
-              <div className="text-center mt-4">
-                <p className="text-sm text-muted-foreground">
-                  Al {isLogin ? 'iniciar sesión' : 'registrarte'}, aceptas nuestros términos de servicio
-                </p>
+            {isLogin && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="text-sm text-primary hover:text-primary/80 transition-colors underline"
+                >
+                  ¿Olvidaste tu contraseña? Ingresa aquí
+                </button>
               </div>
+            )}
+
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Al {isLogin ? 'iniciar sesión' : 'registrarte'}, aceptas nuestros términos de servicio
+              </p>
             </div>
           </Card>
         )}
 
         {/* Cards informativas de módulos */}
-        <div className="mt-8 space-y-6">
-          <div className="text-center">
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              ✨ Conoce nuestros módulos antes de comenzar
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Descubre todas las herramientas que tenemos para tu bienestar
-            </p>
-          </div>
+        {acceptedTerms && (
+          <div className="mt-8 space-y-6">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                ✨ Conoce nuestros módulos antes de comenzar
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Descubre todas las herramientas que tenemos para tu bienestar
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Módulo Mi Perfil */}
-            <Card className="bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="mx-auto w-12 h-12 bg-secondary/30 rounded-full flex items-center justify-center">
-                  <Target className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-accent mb-2">👤 Mi Perfil</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Gestiona tu información personal y celebra tus logros de bienestar y salud.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Módulo Mi Perfil */}
+              <Card className="bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20 hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="mx-auto w-12 h-12 bg-secondary/30 rounded-full flex items-center justify-center">
+                    <Target className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-accent mb-2">👤 Mi Perfil</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Gestiona tu información personal y celebra tus logros de bienestar y salud.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* Módulo Bienestar */}
-            <Card className="bg-gradient-to-br from-accent-light/5 to-accent-lighter/10 border-accent-light/20 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="mx-auto w-12 h-12 bg-accent-light/20 rounded-full flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-accent-light" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-accent-light mb-2">🌿 Bienestar</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Cuida tu salud mental con meditación guiada, registro de estado de ánimo y seguimiento de tu calidad de sueño.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              {/* Módulo Bienestar */}
+              <Card className="bg-gradient-to-br from-accent-light/5 to-accent-lighter/10 border-accent-light/20 hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="mx-auto w-12 h-12 bg-accent-light/20 rounded-full flex items-center justify-center">
+                    <Heart className="w-6 h-6 text-accent-light" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-accent-light mb-2">🌿 Bienestar</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Cuida tu salud mental con meditación guiada, registro de estado de ánimo y seguimiento de tu calidad de sueño.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

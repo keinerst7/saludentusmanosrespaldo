@@ -26,11 +26,13 @@ const Layout = ({ children, currentUser, onLogout }: LayoutProps) => {
         <div className="flex items-center justify-between px-4 lg:px-6 h-16">
           {/* Logo y nombre */}
           <div className="flex items-center space-x-3">
-            <img 
-              src="/lovable-uploads/e4c15637-8aff-495d-8a19-a3a1f6c659fa.png"
-              alt="Salud en tus Manos"
-              className="w-10 h-10"
-            />
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md">
+              <img 
+                src="/public/lovable-uploads/e4c15637-8aff-495d-8a19-a3a1f6c659fa-removebg-preview (2).png"
+                alt="Salud en tus Manos"
+                className="w-8 h-8 object-contain"
+              />
+            </div>
             <h1 className="text-lg lg:text-xl font-bold text-white">
               Salud en tus Manos
             </h1>

@@ -96,10 +96,12 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   ]);
 
   const [meditationSessions] = useState<MeditationSession[]>([
-    { id: 1, name: 'Respiración Consciente', duration: 10, category: 'Relajación', description: 'Ejercicio básico de respiración para reducir el estrés' },
-    { id: 2, name: 'Mindfulness Matutino', duration: 15, category: 'Mindfulness', description: 'Sesión para comenzar el día con claridad mental' },
-    { id: 3, name: 'Relajación Nocturna', duration: 20, category: 'Sueño', description: 'Meditación para preparar el cuerpo para el descanso' },
-    { id: 4, name: 'Gratitud Diaria', duration: 8, category: 'Positividad', description: 'Práctica de gratitud para mejorar el bienestar emocional' }
+    { id: 1, name: 'Respiración Consciente', duration: 5, category: 'Relajación', description: 'Ejercicio básico de respiración para reducir el estrés' },
+    { id: 2, name: 'Mindfulness Matutino', duration: 7, category: 'Mindfulness', description: 'Sesión para comenzar el día con claridad mental' },
+    { id: 3, name: 'Relajación Nocturna', duration: 6, category: 'Sueño', description: 'Meditación para preparar el cuerpo para el descanso' },
+    { id: 4, name: 'Gratitud Diaria', duration: 5, category: 'Positividad', description: 'Práctica de gratitud para mejorar el bienestar emocional' },
+    { id: 5, name: 'Serenidad Nocturna', duration: 7, category: 'Sueño', description: 'Meditación relajante para preparar el descanso' },
+    { id: 6, name: 'Calma Interior', duration: 6, category: 'Relajación', description: 'Sesión para encontrar paz en momentos de estrés' }
   ]);
 
   const [completedMeditations, setCompletedMeditations] = useState<MeditationSession[]>([
