@@ -5,11 +5,12 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 const indexDia = require('./router/indexdia');
-const usersRuta = require('./router/usersRuta');
+const userRoutes = require('./router/usersRuta');
 const moodRoutes = require('./router/moodRuta');
-const triggerRoutes = require('./router/triggerRuta');
+const sleepRoutes = require('./router/sleepRuta');
 const meditationRoutes = require('./router/meditationRuta');
-const completedMeditationsRutas = require('./router/completedMeditationsRuta');
+const completedMeditationsRoutes = require('./router/completedMeditationsRuta');
+
 
 
 
@@ -30,11 +31,11 @@ app.use(cors({
 
 // Rutas
 app.use('/', indexDia);
-app.use('/api/usuarios', usersRuta);
-app.use('/api/mood', moodRoutes);
-app.use('/api/triggers', triggerRoutes);
-app.use('/api/meditation', meditationRoutes);
-app.use('/api/completed-meditations', completedMeditationsRutas);
+app.use('/api/users', userRoutes);
+app.use('/api/moods', moodRoutes);
+app.use('/api/sleep', sleepRoutes);
+app.use('/api/meditations', meditationRoutes);
+app.use('/api/completed-meditations', completedMeditationsRoutes);
 
 
 

@@ -1,9 +1,9 @@
 const pool = require('./bd/Conexion');
 
-class MoodModel {
+class SleepModel {
   static async getAll() {
     try {
-      const [rows] = await pool.query('SELECT * FROM mood_entries');
+      const [rows] = await pool.query('SELECT * FROM sleep_entries');
       return rows;
     } catch (error) {
       throw error;
@@ -12,7 +12,7 @@ class MoodModel {
 
   static async getById(id) {
     try {
-      const [rows] = await pool.query('SELECT * FROM mood_entries WHERE id = ?', [id]);
+      const [rows] = await pool.query('SELECT * FROM sleep_entries WHERE id = ?', [id]);
       return rows[0];
     } catch (error) {
       throw error;
@@ -21,7 +21,7 @@ class MoodModel {
 
   static async create(entry) {
     try {
-      const [result] = await pool.query('INSERT INTO mood_entries SET ?', entry);
+      const [result] = await pool.query('INSERT INTO sleep_entries SET ?', entry);
       return { id: result.insertId, ...entry };
     } catch (error) {
       throw error;
@@ -30,7 +30,7 @@ class MoodModel {
 
   static async update(id, entry) {
     try {
-      await pool.query('UPDATE mood_entries SET ? WHERE id = ?', [entry, id]);
+      await pool.query('UPDATE sleep_entries SET ? WHERE id = ?', [entry, id]);
       return { id, ...entry };
     } catch (error) {
       throw error;
@@ -39,12 +39,12 @@ class MoodModel {
 
   static async delete(id) {
     try {
-      await pool.query('DELETE FROM mood_entries WHERE id = ?', [id]);
-      return { message: 'Registro eliminado correctamente' };
+      await pool.query('DELETE FROM sleep_entries WHERE id = ?', [id]);
+      return { message: 'Registro de sueño eliminado correctamente' };
     } catch (error) {
       throw error;
     }
   }
 }
 
-module.exports = MoodModel;
+module.exports = SleepModel;

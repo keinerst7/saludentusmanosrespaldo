@@ -82,6 +82,7 @@ const EmotionalControlModule = ({ onBack }: EmotionalControlProps) => {
     { id: 2, title: 'Registro de emociones', description: 'Anotar estado diario', progress: 12, target: 15, completed: false },
     { id: 3, title: 'Ejercicios de respiración', description: '5 veces por semana', progress: 8, target: 10, completed: false },
   ]);
+  
 
   const [currentMood, setCurrentMood] = useState(3);
   const [currentStress, setCurrentStress] = useState(3);

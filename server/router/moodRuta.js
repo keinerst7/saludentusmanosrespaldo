@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const moodController = require('../controlador/moodController');
+const MoodController = require('../controlador/moodController');
 
-router.get('/:userId', moodController.obtenerTodos);
-router.get('/entry/:id', moodController.obtenerPorId);
-router.post('/', moodController.crear);
-router.put('/:id', moodController.actualizar);
-router.delete('/:id', moodController.eliminar);
+router.get('/', MoodController.getAll);
+router.get('/:id', MoodController.getById);
+router.post('/', MoodController.create);
+router.put('/:id', MoodController.update);
+router.delete('/:id', MoodController.delete);
 
 module.exports = router;

@@ -1,10 +1,10 @@
-const MoodModel = require('../modelo/moodModel');
+const UserModel = require('../modelo/usersModel');
 
-class MoodController {
+class UserController {
   static async getAll(req, res) {
     try {
-      const entries = await MoodModel.getAll();
-      res.json(entries);
+      const users = await UserModel.getAll();
+      res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -12,11 +12,11 @@ class MoodController {
 
   static async getById(req, res) {
     try {
-      const entry = await MoodModel.getById(req.params.id);
-      if (!entry) {
-        return res.status(404).json({ message: 'Entrada no encontrada' });
+      const user = await UserModel.getById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
       }
-      res.json(entry);
+      res.json(user);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -24,8 +24,8 @@ class MoodController {
 
   static async create(req, res) {
     try {
-      const newEntry = await MoodModel.create(req.body);
-      res.status(201).json(newEntry);
+      const newUser = await UserModel.create(req.body);
+      res.status(201).json(newUser);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -33,8 +33,8 @@ class MoodController {
 
   static async update(req, res) {
     try {
-      const updatedEntry = await MoodModel.update(req.params.id, req.body);
-      res.json(updatedEntry);
+      const updatedUser = await UserModel.update(req.params.id, req.body);
+      res.json(updatedUser);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -42,7 +42,7 @@ class MoodController {
 
   static async delete(req, res) {
     try {
-      const result = await MoodModel.delete(req.params.id);
+      const result = await UserModel.delete(req.params.id);
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -50,4 +50,4 @@ class MoodController {
   }
 }
 
-module.exports = MoodController;
+module.exports = UserController;

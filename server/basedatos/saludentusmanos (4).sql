@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-08-2025 a las 00:36:14
+-- Tiempo de generación: 09-08-2025 a las 21:56:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,20 +46,9 @@ CREATE TABLE `meditation_sessions` (
   `name` varchar(100) NOT NULL,
   `duration` int(11) NOT NULL,
   `category` varchar(50) DEFAULT NULL,
-  `description` text DEFAULT NULL
+  `description` text DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `meditation_sessions`
---
-
-INSERT INTO `meditation_sessions` (`id`, `name`, `duration`, `category`, `description`) VALUES
-(1, 'Respiración Consciente', 5, 'Relajación', 'Ejercicio básico de respiración para reducir el estrés'),
-(2, 'Mindfulness Matutino', 7, 'Mindfulness', 'Sesión para comenzar el día con claridad mental'),
-(3, 'Relajación Nocturna', 6, 'Sueño', 'Meditación para preparar el cuerpo para el descanso'),
-(4, 'Gratitud Diaria', 5, 'Positividad', 'Práctica de gratitud para mejorar el bienestar emocional'),
-(5, 'Serenidad Nocturna', 7, 'Sueño', 'Meditación relajante para preparar el descanso'),
-(6, 'Calma Interior', 6, 'Relajación', 'Sesión para encontrar paz en momentos de estrés');
 
 -- --------------------------------------------------------
 
@@ -218,7 +207,7 @@ ALTER TABLE `completed_meditations`
 -- AUTO_INCREMENT de la tabla `meditation_sessions`
 --
 ALTER TABLE `meditation_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `mood_entries`
