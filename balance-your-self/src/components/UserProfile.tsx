@@ -92,7 +92,7 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
           </TabsTrigger>
           <TabsTrigger value="health" className="flex items-center gap-2">
             <Heart className="w-4 h-4" />
-            Salud
+            Consejos y Motivacion
           </TabsTrigger>
         </TabsList>
 
@@ -259,94 +259,26 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
         <TabsContent value="health" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Información de salud general */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Estado General</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-center p-4 bg-green-500/10 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600 mb-1">
-                      Excelente
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Estado de salud general
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground space-y-1">
-                    <p><strong>Última evaluación:</strong> Hace 3 días</p>
-                    <p><strong>Tendencia:</strong> Estable y saludable</p>
-                    <p><strong>Próxima revisión:</strong> En 1 mes</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Bienestar Emocional</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-center p-4 bg-accent/10 rounded-lg">
-                    <div className="text-2xl font-bold text-accent mb-1">
-                      {stats.avgMood}/10
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Promedio bienestar
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground space-y-1">
-                    <p><strong>Esta semana:</strong> 8.5/10</p>
-                    <p><strong>Tendencia:</strong> Mejorando constantemente</p>
-                    <p><strong>Racha positiva:</strong> 12 días</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Hábitos Saludables</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-center p-4 bg-blue-500/10 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600 mb-1">
-                      92%
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Consistencia semanal
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground space-y-1">
-                    <p><strong>Meditación:</strong> 6/7 días</p>
-                    <p><strong>Sueño regular:</strong> 7/7 días</p>
-                    <p><strong>Bienestar emocional:</strong> 5/7 días</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+ 
 
             {/* Logros recientes ampliados */}
             <div className="md:col-span-2 lg:col-span-3">
               <Card>
                 <CardHeader>
-                  <CardTitle>Logros de Salud y Bienestar</CardTitle>
+                  <CardTitle>Consejos y Motivación</CardTitle>
                   <CardDescription>
-                    Celebra tus avances en el camino hacia una vida más saludable
+                    Frases inspiradoras y consejos para mantener hábitos saludables
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                     <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-lg border border-green-500/20">
                       <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
                         <Target className="w-6 h-6 text-green-600" />
                       </div>
                       <div>
-                        <p className="font-medium text-green-700">Primera Semana Completa</p>
-                        <p className="text-sm text-muted-foreground">7 días seguidos de actividad</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-green-50">¡Excelente!</Badge>
+                        <p className="font-medium text-green-700">Hidratación</p>
+                        <p className="text-sm text-muted-foreground">"El agua es la fuente de la vida. Hidrátate y dale a tu cuerpo lo que necesita para brillar."</p>
                       </div>
                     </div>
 
@@ -356,8 +288,7 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
                       </div>
                       <div>
                         <p className="font-medium text-blue-700">Meditador Constante</p>
-                        <p className="text-sm text-muted-foreground">15 sesiones completadas</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-blue-50">Zen Master</Badge>
+                        <p className="text-sm text-muted-foreground">"Cinco minutos de meditación pueden transformar tu día. La calma interior es tusuperpoder."</p>
                       </div>
                     </div>
 
@@ -367,8 +298,7 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
                       </div>
                       <div>
                         <p className="font-medium text-purple-700">Buen Descanso</p>
-                        <p className="text-sm text-muted-foreground">10 noches de 8+ horas</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-purple-50">Dormilón Pro</Badge>
+                        <p className="text-sm text-muted-foreground">"Un buen descanso es la mejor medicina. Tu cuerpo se regenera mientras duermes."</p>
                       </div>
                     </div>
 
@@ -378,21 +308,11 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
                       </div>
                       <div>
                         <p className="font-medium text-pink-700">Estado Positivo</p>
-                        <p className="text-sm text-muted-foreground">Bienestar alto por 5 días</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-pink-50">Optimista</Badge>
+                        <p className="text-sm text-muted-foreground">"Cada pequeño hábito saludable es una semilla que plantás para tu futuro bienestar."</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-lg border border-orange-500/20">
-                      <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-6 h-6 text-orange-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-orange-700">Racha de Progreso</p>
-                        <p className="text-sm text-muted-foreground">12 días consecutivos activo</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-orange-50">Imparable</Badge>
-                      </div>
-                    </div>
+ 
 
                     <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-cyan-500/10 to-cyan-600/10 rounded-lg border border-cyan-500/20">
                       <div className="w-12 h-12 bg-cyan-500/20 rounded-full flex items-center justify-center">
@@ -400,21 +320,10 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
                       </div>
                       <div>
                         <p className="font-medium text-cyan-700">Equilibrio Mental</p>
-                        <p className="text-sm text-muted-foreground">Estabilidad emocional</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-cyan-50">Centrado</Badge>
+                        <p className="text-sm text-muted-foreground">"Tu salud mental es tan importante como tu salud física. Cuida ambas con amor."</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 rounded-lg border border-yellow-500/20">
-                      <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
-                        <TrendingUp className="w-6 h-6 text-yellow-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-yellow-700">Evolución Constante</p>
-                        <p className="text-sm text-muted-foreground">Mejora semanal del 15%</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-yellow-50">En Crecimiento</Badge>
-                      </div>
-                    </div>
 
                     <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-500/10 to-indigo-600/10 rounded-lg border border-indigo-500/20">
                       <div className="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center">
@@ -422,8 +331,7 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
                       </div>
                       <div>
                         <p className="font-medium text-indigo-700">Autocuidado</p>
-                        <p className="text-sm text-muted-foreground">Rutina de bienestar diaria</p>
-                        <Badge variant="outline" className="mt-1 text-xs bg-indigo-50">Disciplinado</Badge>
+                        <p className="text-sm text-muted-foreground">"No puedes servir desde un vaso vacío. Cuídate a ti mismo, porque tu bienestar es la base de todo lo que haces."</p>
                       </div>
                     </div>
                   </div>
