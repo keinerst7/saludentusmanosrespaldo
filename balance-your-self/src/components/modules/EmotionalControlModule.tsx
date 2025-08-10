@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -98,6 +98,22 @@ const EmotionalControlModule = ({ onBack }: EmotionalControlProps) => {
     steps: '',
     duration: ''
   });
+
+useEffect(() => {
+  console.log ("ksifghkfjghcfjkh")
+    // Aquí hacemos la llamada a la API cuando el componente se monta
+    fetch("http://localhost:3000/api/moods")
+      .then((response) => {
+         console.log (response)
+        if (!response.ok) {
+         
+          throw new Error("Error en la respuesta de la API");
+        }
+    
+      })
+
+  }, []); 
+
 
   const commonTriggers = [
     'trabajo', 'familia', 'ejercicio', 'dinero', 'salud', 'relaciones', 

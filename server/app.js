@@ -13,7 +13,6 @@ const completedMeditationsRoutes = require('./router/completedMeditationsRuta');
 
 
 
-
 // Middleware
 app.use(cors({
     origin: '*', // Cambiar ['http://tu.com', 'http://yo.com'],
@@ -36,7 +35,6 @@ app.use('/api/moods', moodRoutes);
 app.use('/api/sleep', sleepRoutes);
 app.use('/api/meditations', meditationRoutes);
 app.use('/api/completed-meditations', completedMeditationsRoutes);
-
 
 
 // Exportar app para testing

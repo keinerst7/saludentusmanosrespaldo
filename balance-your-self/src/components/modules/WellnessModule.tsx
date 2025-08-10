@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,12 +19,12 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Heart, 
-  Brain, 
-  Moon, 
-  Plus, 
-  Calendar, 
+import {
+  Heart,
+  Brain,
+  Moon,
+  Plus,
+  Calendar,
   Smile,
   Frown,
   Meh,
@@ -40,6 +40,8 @@ import {
   Clock
 } from 'lucide-react';
 import MotivationTab from './MotivationTab';
+import axios from "axios";
+import { dataTagSymbol } from '@tanstack/react-query';
 
 interface MoodEntry {
   id: number;
@@ -75,33 +77,33 @@ interface WellnessModuleProps {
 
 const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([
-    { 
-      id: 1, 
-      date: '2024-01-29', 
-      mood: 4, 
-      note: 'Día productivo en el trabajo', 
-      stress: 3, 
+    {
+      id: 1,
+      date: '2024-01-29',
+      mood: 4,
+      note: 'Día productivo en el trabajo',
+      stress: 3,
       energy: 4,
       triggers: ['trabajo', 'ejercicio']
     },
-    { 
-      id: 2, 
-      date: '2024-01-28', 
-      mood: 3, 
-      note: 'Algo cansado pero estable', 
-      stress: 4, 
+    {
+      id: 2,
+      date: '2024-01-28',
+      mood: 3,
+      note: 'Algo cansado pero estable',
+      stress: 4,
       energy: 2,
       triggers: ['cansancio', 'trabajo']
     },
   ]);
 
-  const [meditationSessions] = useState<MeditationSession[]>([
-    { id: 1, name: 'Respiración Consciente', duration: 5, category: 'Relajación', description: 'Ejercicio básico de respiración para reducir el estrés' },
-    { id: 2, name: 'Mindfulness Matutino', duration: 7, category: 'Mindfulness', description: 'Sesión para comenzar el día con claridad mental' },
-    { id: 3, name: 'Relajación Nocturna', duration: 6, category: 'Sueño', description: 'Meditación para preparar el cuerpo para el descanso' },
-    { id: 4, name: 'Gratitud Diaria', duration: 5, category: 'Positividad', description: 'Práctica de gratitud para mejorar el bienestar emocional' },
-    { id: 5, name: 'Serenidad Nocturna', duration: 7, category: 'Sueño', description: 'Meditación relajante para preparar el descanso' },
-    { id: 6, name: 'Calma Interior', duration: 6, category: 'Relajación', description: 'Sesión para encontrar paz en momentos de estrés' }
+  const [meditationSessions, setMeditationSessions] = useState<MeditationSession[]>([
+    // { id: 1, name: 'Respiración Consciente', duration: 5, category: 'Relajación', description: 'Ejercicio básico de respiración para reducir el estrés' },
+    // { id: 2, name: 'Mindfulness Matutino', duration: 7, category: 'Mindfulness', description: 'Sesión para comenzar el día con claridad mental' },
+    // { id: 3, name: 'Relajación Nocturna', duration: 6, category: 'Sueño', description: 'Meditación para preparar el cuerpo para el descanso' },
+    // { id: 4, name: 'Gratitud Diaria', duration: 5, category: 'Positividad', description: 'Práctica de gratitud para mejorar el bienestar emocional' },
+    // { id: 5, name: 'Serenidad Nocturna', duration: 7, category: 'Sueño', description: 'Meditación relajante para preparar el descanso' },
+    // { id: 6, name: 'Calma Interior', duration: 6, category: 'Relajación', description: 'Sesión para encontrar paz en momentos de estrés' }
   ]);
 
   const [completedMeditations, setCompletedMeditations] = useState<MeditationSession[]>([
@@ -196,14 +198,14 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
         energy: currentEnergy,
         triggers: []
       };
-      
+
       setMoodEntries([newEntry, ...moodEntries]);
       setMoodNote('');
       setCurrentMood(3);
       setCurrentStress(3);
       setCurrentEnergy(3);
       setShowMoodConfirm(false);
-      
+
       // Mostrar mensaje motivacional
       toast({
         title: "✅ Estado registrado",
@@ -220,13 +222,13 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       quality: sleepQuality,
       note: sleepNote
     };
-    
+
     setSleepEntries([newEntry, ...sleepEntries]);
     setSleepHours('7');
     setSleepQuality(4);
     setSleepNote('');
     setShowSleepSuccess(true);
-    
+
     toast({
       title: "✅ ¡Registro Exitoso!",
       description: "Tu información de sueño ha sido registrada correctamente.",
@@ -259,7 +261,19 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       setIsPlaying(false);
       setCurrentSession(null);
       setSessionTime(0);
+
+
+      axios.post('http://localhost:3000/api/completed-meditations', {
+        user_id: 2,
+        meditation_id: currentSession.id,
+        completed_date: completedSession.completedDate,
+        duration: currentSession.duration
+      })
     }
+
+    console.log("SESION: ", currentSession)
+
+
   };
 
   const resetMeditation = () => {
@@ -281,7 +295,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
 
   const deleteMeditationSession = () => {
     if (meditationToDelete) {
-      setCompletedMeditations(completedMeditations.filter(session => 
+      setCompletedMeditations(completedMeditations.filter(session =>
         session.id !== meditationToDelete.id || session.completedDate !== meditationToDelete.completedDate
       ));
       setMeditationToDelete(null);
@@ -325,6 +339,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
     setShowMoodDetails(true);
   };
 
+  console.log("data: ", currentMood)
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -334,7 +350,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   // Timer para meditación
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (isPlaying && currentSession) {
       interval = setInterval(() => {
         setSessionTime((prevTime) => {
@@ -355,6 +371,57 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       }
     };
   }, [isPlaying, currentSession]);
+
+
+  useEffect(() => {
+    console.log("Modulos")
+    // Aquí hacemos la llamada a la API cuando el componente se monta
+    axios.get("http://localhost:3000/api/moods")
+      .then(res => {
+        console.log(res)
+        setMoodEntries(res.data)
+      })
+    axios.get("http://localhost:3000/api/meditations")
+      .then(res => {
+        console.log(res);
+        setMeditationSessions(res.data)
+
+      });
+
+      axios.get("http://localhost:3000/api/completed-meditations")
+        .then(res => {
+          console.log("COMPLETE",res);
+          setCompletedMeditations(res.data);
+        });
+  }, []);
+
+
+  const guardarMood = () => {
+    axios.post('http://localhost:3000/api/moods', {
+      "user_id": 2,
+      "date": "2025-08-09",
+      "mood": currentMood,
+      "stress": currentStress,
+      "energy": currentEnergy,
+      "note": moodNote,
+      "created_at": "2025-08-09T00:32:16Z",
+    }).then(res =>
+      console.log("guardado: ", res)
+    )
+  }
+
+
+  const regisMeditation = () => {
+    axios.post('/api/completed-meditations', {
+      "user_id": 2,
+      "meditation_id": 2,
+      "completed_date": "2025-08-09",
+      "completed_at": "2025-08-09T00:30:17Z",
+    }).then(res =>
+      console.log("guardado: ", res)
+    )
+  }
+
 
   return (
     <div className="space-y-6">
@@ -478,8 +545,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                   />
                 </div>
 
-                <Button 
-                  onClick={() => setShowMoodConfirm(true)} 
+                <Button
+                  onClick={() => guardarMood()}
                   className="w-full bg-accent-light hover:bg-accent-light/90"
                   disabled={!moodNote.trim()}
                 >
@@ -519,15 +586,15 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                           <span>Energía: {entry.energy}/5</span>
                         </div>
                         <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => viewMoodDetails(entry)}
                           >
                             <Eye className="w-3 h-3" />
                           </Button>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => deleteMoodEntry(entry.id)}
                           >
@@ -561,7 +628,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button 
+                    <Button
                       onClick={() => startMeditation(session)}
                       className="w-full bg-accent-light hover:bg-accent-light/90"
                       disabled={isPlaying && currentSession?.id === session.id}
@@ -592,7 +659,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                           {formatTime(sessionTime)}
                         </div>
                         <div className="w-full bg-secondary rounded-full h-2 mb-4">
-                          <div 
+                          <div
                             className="bg-primary h-2 rounded-full transition-all duration-1000"
                             style={{ width: `${(sessionTime / (currentSession.duration * 60)) * 100}%` }}
                           ></div>
@@ -655,8 +722,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="text-xs">Completado</Badge>
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
                               className="text-xs"
                               onClick={() => setShowMeditationDetails(session)}
@@ -664,8 +731,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                               <Eye className="w-3 h-3 mr-1" />
                               Ver
                             </Button>
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
                               className="text-xs text-red-600 hover:text-red-700"
                               onClick={() => setMeditationToDelete(session)}
@@ -789,8 +856,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                           })}
                         </span>
                         <div className="flex items-center gap-2">
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             className="text-xs"
                             onClick={() => setShowSleepDetails(entry)}
@@ -798,8 +865,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                             <Eye className="w-3 h-3 mr-1" />
                             Ver detalles
                           </Button>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             className="text-xs text-red-600 hover:text-red-700"
                             onClick={() => setSleepToDelete(entry.id)}
@@ -809,16 +876,16 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                           </Button>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-4">
                         <span className="font-medium">{entry.hours}h de sueño</span>
                         <Badge variant="outline">Calidad: {entry.quality}/5</Badge>
                       </div>
-                      
+
                       {entry.note && (
                         <p className="text-sm bg-secondary/20 p-2 rounded italic">"{entry.note}"</p>
                       )}
-                      
+
                       <div className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-300">
                         <p className="text-xs text-blue-700 font-medium">
                           💡 {getSleepTip(entry.hours, entry.quality)}
@@ -826,7 +893,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {sleepEntries.length === 0 && (
                     <div className="text-center p-6 text-muted-foreground">
                       <Moon className="w-12 h-12 mx-auto mb-2 opacity-50" />
@@ -890,7 +957,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     </div>
                     <Progress value={100} className="h-2" />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-2">
                       <span className="text-sm">Sesiones de meditación</span>
@@ -898,7 +965,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     </div>
                     <Progress value={71} className="h-2" />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between mb-2">
                       <span className="text-sm">Registros de sueño</span>
@@ -1039,7 +1106,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     <div className="text-xs text-muted-foreground">Energía</div>
                   </div>
                 </div>
-                
+
                 <div className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium mb-2">Notas del día:</h4>
                   <p className="text-sm text-muted-foreground">{selectedMoodEntry.note}</p>
@@ -1048,11 +1115,11 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                 <div className="p-4 bg-primary/10 rounded-lg">
                   <h4 className="font-medium text-primary mb-2">Resumen y consejo:</h4>
                   <p className="text-sm">
-                    {selectedMoodEntry.mood >= 4 
+                    {selectedMoodEntry.mood >= 4
                       ? "Tuviste un excelente día. Recuerda qué actividades te hicieron sentir así para repetirlas."
-                      : selectedMoodEntry.mood >= 3 
-                      ? "Fue un día equilibrado. Pequeños ajustes en tu rutina pueden mejorar tu bienestar."
-                      : "Fue un día desafiante. Recuerda que es normal tener días difíciles. Practica autocompasión."
+                      : selectedMoodEntry.mood >= 3
+                        ? "Fue un día equilibrado. Pequeños ajustes en tu rutina pueden mejorar tu bienestar."
+                        : "Fue un día desafiante. Recuerda que es normal tener días difíciles. Practica autocompasión."
                     }
                   </p>
                 </div>
@@ -1094,8 +1161,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
               </p>
             </div>
 
-            <Button 
-              onClick={() => setShowWellnessAnalysis(true)} 
+            <Button
+              onClick={() => setShowWellnessAnalysis(true)}
               className="w-full"
               variant="outline"
             >
@@ -1194,7 +1261,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                   <h3 className="font-semibold text-lg">{showMeditationDetails.name}</h3>
                   <p className="text-sm text-muted-foreground">{showMeditationDetails.category}</p>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="font-bold">{showMeditationDetails.duration} min</div>
@@ -1205,7 +1272,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     <div className="text-xs text-muted-foreground">Completada</div>
                   </div>
                 </div>
-                
+
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm">{showMeditationDetails.description}</p>
                 </div>
@@ -1254,7 +1321,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     })}
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="font-bold">{showSleepDetails.quality}/5</div>
@@ -1265,7 +1332,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                     <div className="text-xs text-muted-foreground">Duración</div>
                   </div>
                 </div>
-                
+
                 {showSleepDetails.note && (
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-medium mb-2">Notas:</h4>
