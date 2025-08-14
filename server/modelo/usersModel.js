@@ -1,4 +1,5 @@
 const pool = require('./bd/Conexion');
+const bcrypt = require('bcrypt');
 
 class UserModel {
   static async getAll() {
@@ -9,6 +10,11 @@ class UserModel {
       throw error;
     }
   }
+  
+  static async getByEmail(email) {
+  const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+  return rows[0];
+}
 
   static async getById(id) {
     try {
@@ -21,8 +27,18 @@ class UserModel {
 
   static async create(user) {
     try {
-      const [result] = await pool.query('INSERT INTO users SET ?', user);
-      return { id: result.insertId, ...user };
+      // Encriptar la contraseña antes de guardar
+      const saltRounds = 10; // Nivel de complejidad
+      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+
+      // Reemplazamos la contraseña original por la encriptada
+      const userWithHashedPassword = {
+        ...user,
+        password: hashedPassword
+      };
+
+      const [result] = await pool.query('INSERT INTO users SET ?', userWithHashedPassword);
+      return { id: result.insertId, ...userWithHashedPassword };
     } catch (error) {
       throw error;
     }
@@ -30,6 +46,12 @@ class UserModel {
 
   static async update(id, user) {
     try {
+      // Si en el update viene una contraseña, la encriptamos también
+      if (user.password) {
+        const saltRounds = 10;
+        user.password = await bcrypt.hash(user.password, saltRounds);
+      }
+
       await pool.query('UPDATE users SET ? WHERE id = ?', [user, id]);
       return { id, ...user };
     } catch (error) {

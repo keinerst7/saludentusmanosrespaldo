@@ -99,21 +99,6 @@ const EmotionalControlModule = ({ onBack }: EmotionalControlProps) => {
     duration: ''
   });
 
-useEffect(() => {
-  console.log ("ksifghkfjghcfjkh")
-    // Aquí hacemos la llamada a la API cuando el componente se monta
-    fetch("http://localhost:3000/api/moods")
-      .then((response) => {
-         console.log (response)
-        if (!response.ok) {
-         
-          throw new Error("Error en la respuesta de la API");
-        }
-    
-      })
-
-  }, []); 
-
 
   const commonTriggers = [
     'trabajo', 'familia', 'ejercicio', 'dinero', 'salud', 'relaciones', 

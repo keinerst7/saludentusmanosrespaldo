@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,6 +26,7 @@ import {
   Brain,
   Moon
 } from 'lucide-react';
+import axios from 'axios';
 
 interface UserProfileProps {
   onBack: () => void;
@@ -39,7 +40,6 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
     email: 'usuario@ejemplo.com',
     phone: '+1234567890',
     location: 'Ciudad, País',
-    age: '30',
     goal: 'Mantener un estilo de vida saludable',
     bio: 'Comprometido con mi bienestar integral y crecimiento personal.',
     joinDate: '2024-01-01'
@@ -65,6 +65,28 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
   };
 
 
+// Llamada a la API para obtener los usuarios
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/users")
+      .then(res => {
+        console.log("Listado de usuarios registrados", res);
+      });
+  }, []);
+
+
+  const guardarUsers = () => {
+    axios.post("http://localhost:3000/api/users", {
+      name: profileData.name,
+      email: profileData.email,
+      phone: profileData.phone,
+      location: profileData.location,
+      goal: profileData.goal,
+      bio: profileData.bio,
+      joinDate: profileData.joinDate
+    }).then(res => {
+      console.log("Usuario guardado", res);
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -115,20 +137,7 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Avatar */}
-                <div className="flex flex-col items-center space-y-4">
-                  <Avatar className="w-24 h-24">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                      {profileData.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  {isEditing && (
-                    <Button variant="outline" size="sm">
-                      <Camera className="w-4 h-4 mr-2" />
-                      Cambiar foto
-                    </Button>
-                  )}
-                </div>
+
 
                 {/* Campos de información */}
                 <div className="space-y-4">

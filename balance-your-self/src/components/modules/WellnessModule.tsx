@@ -132,6 +132,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   // Estados para popups y diálogos
   const [showMeditationComplete, setShowMeditationComplete] = useState(false);
   const [showMeditationConfirm, setShowMeditationConfirm] = useState(false);
+  const [showSleepConfirm, setShowSleepConfirm] = useState(false);
   const [showSleepSuccess, setShowSleepSuccess] = useState(false);
   const [showMoodConfirm, setShowMoodConfirm] = useState(false);
   const [showWellnessSummary, setShowWellnessSummary] = useState(false);
@@ -145,6 +146,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const [showSleepDetails, setShowSleepDetails] = useState<SleepEntry | null>(null);
   const [sleepToDelete, setSleepToDelete] = useState<number | null>(null);
   const [showEarlyExitMessage, setShowEarlyExitMessage] = useState(false);
+
 
   const { toast } = useToast();
 
@@ -262,7 +264,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       setCurrentSession(null);
       setSessionTime(0);
 
-
+      // METODO POST PARA REGISTRAR SESION DE MEDITACION
       axios.post('http://localhost:3000/api/completed-meditations', {
         user_id: 2,
         meditation_id: currentSession.id,
@@ -339,7 +341,6 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
     setShowMoodDetails(true);
   };
 
-  console.log("data: ", currentMood)
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -373,53 +374,113 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   }, [isPlaying, currentSession]);
 
 
+  // Cargar datos iniciales desde la API
   useEffect(() => {
     console.log("Modulos")
     // Aquí hacemos la llamada a la API cuando el componente se monta
     axios.get("http://localhost:3000/api/moods")
       .then(res => {
-        console.log(res)
+        console.log("Listado de estados de ánimo registrados", res)
         setMoodEntries(res.data)
       })
+
+
+    // Cargar sesiones de meditación
     axios.get("http://localhost:3000/api/meditations")
       .then(res => {
-        console.log(res);
+        console.log("Listado de meditaciones cargadas", res);
         setMeditationSessions(res.data)
-
       });
 
-      axios.get("http://localhost:3000/api/completed-meditations")
-        .then(res => {
-          console.log("COMPLETE",res);
-          setCompletedMeditations(res.data);
-        });
+    // Cargar sesiones de meditación completadas
+    axios.get("http://localhost:3000/api/completed-meditations")
+      .then(res => {
+        console.log("Sesiones completadas", res);
+        setCompletedMeditations(res.data);
+      });
+
+    // Cargar registros de sueño
+    axios.get("http://localhost:3000/api/sleep")
+      .then(res => {
+        console.log("Listado de registros de sueño", res);
+        setSleepEntries(res.data);
+      });
   }, []);
 
 
-  const guardarMood = () => {
-    axios.post('http://localhost:3000/api/moods', {
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // 1. METODOS POST Y DELETE PARA EL SUEÑO
+
+  // Función para guardar el sueño
+  const guardarSueño = () => {
+    axios.post('http://localhost:3000/api/sleep', {
       "user_id": 2,
       "date": "2025-08-09",
+      "hours": sleepHours,
+      "quality": sleepQuality,
+      "note": sleepNote,
+    }).then(res => {
+      console.log("guardado: ", res)
+      setSleepEntries([{
+        id: res.data.id,
+        // user_id: 2,
+        date: "2025-08-09",
+        hours: parseFloat(sleepHours),
+        quality: sleepQuality,
+        note: sleepNote,
+      }, ...sleepEntries])
+    }
+    )
+
+  }
+
+  // Método para borrar el sueño
+  const borrarSueño = (id: number) => {
+    console.log("Borrar sueño con ID: ", id)
+    axios.delete(`http://localhost:3000/api/sleep/${id}`)
+      .then(res =>
+        console.log("borrado: ", res)
+      )
+    setSleepEntries(sleepEntries.filter(entry => entry.id !== id));
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  // METODOS PARA ESTADOS DE ANIMO
+  // 1. METODOS POST PARA GUARDAR EL ESTADO DE ANIMO
+  // Función para guardar el estado de ánimo
+  const guardarMood = () => {
+    axios.post('http://localhost:3000/api/moods', {
+      "user_id":2,
+      //"date": "2025-08-09",
       "mood": currentMood,
       "stress": currentStress,
       "energy": currentEnergy,
       "note": moodNote,
-      "created_at": "2025-08-09T00:32:16Z",
     }).then(res =>
       console.log("guardado: ", res)
     )
   }
 
+  // 2. METODO DELETE PARA BORRAR ESTADOS DE ANIMO
+  const borrarMood = (id: number) => {
+    console.log("Borrar estado de ánimo con ID: ", id);
+    axios.delete(`http://localhost:3000/api/moods/${id}`)
+      .then(res =>
+        console.log("borrado: ", res)
+      );
+    setMoodEntries(moodEntries.filter(entry => entry.id !== id));
+  }
 
-  const regisMeditation = () => {
-    axios.post('/api/completed-meditations', {
-      "user_id": 2,
-      "meditation_id": 2,
-      "completed_date": "2025-08-09",
-      "completed_at": "2025-08-09T00:30:17Z",
-    }).then(res =>
-      console.log("guardado: ", res)
-    )
+///////////////////// ///////////////////////////////////////////////////////////
+  //  3. METODO DELETE PARA BORRAR MEDITACIONES FINALIZADAS
+  const borrarMeditacion = (id: number) => {
+    console.log("Borrar meditación con ID: ", id);
+    axios.delete(`http://localhost:3000/api/completed-meditations/${id}`)
+      .then(res =>
+        console.log("borrado: ", res)
+      );
+    setCompletedMeditations(completedMeditations.filter(entry => entry.id !== id));
   }
 
 
@@ -596,8 +657,9 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => deleteMoodEntry(entry.id)}
+                            onClick={() => borrarMood(entry.id)}
                           >
+                            {/* borrar mood */}
                             <Trash2 className="w-3 h-3" />
                           </Button>
                         </div>
@@ -735,7 +797,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                               size="sm"
                               variant="outline"
                               className="text-xs text-red-600 hover:text-red-700"
-                              onClick={() => setMeditationToDelete(session)}
+                              onClick={() => borrarMeditacion(session.id)}
                             >
                               <Trash2 className="w-3 h-3" />
                             </Button>
@@ -827,7 +889,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                   </div>
                 </div>
 
-                <Button onClick={handleSleepRegistration} className="w-full bg-accent hover:bg-accent/90">
+                <Button onClick={guardarSueño} className="w-full bg-accent hover:bg-accent/90">
                   <Moon className="w-4 h-4 mr-2" />
                   Registrar Sueño
                 </Button>
@@ -869,7 +931,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                             size="sm"
                             variant="outline"
                             className="text-xs text-red-600 hover:text-red-700"
-                            onClick={() => setSleepToDelete(entry.id)}
+                            // onClick={() => setSleepToDelete(entry.id)}
+                            onClick={() => { setShowSleepConfirm(true); setSleepToDelete(entry.id) }}
                           >
                             <Trash2 className="w-3 h-3 mr-1" />
                             Eliminar
@@ -889,6 +952,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
                       <div className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-300">
                         <p className="text-xs text-blue-700 font-medium">
                           💡 {getSleepTip(entry.hours, entry.quality)}
+
                         </p>
                       </div>
                     </div>
@@ -1022,6 +1086,24 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+
+
+      {/* Diálogo de confirmación para eliminar registro de sueño */}
+      {/* <AlertDialog open={sleepToDelete !== null} onOpenChange={() => setSleepToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar registro de sueño?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que quieres eliminar este registro de sueño?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSleepToDelete(null)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => sleepToDelete !== null && borrarSueño(sleepToDelete)}>Eliminar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog> */}
 
       {/* Dialog de meditación completada */}
       <Dialog open={showMeditationComplete} onOpenChange={setShowMeditationComplete}>
@@ -1282,21 +1364,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog para confirmar eliminación de sesión de meditación */}
-      <AlertDialog open={meditationToDelete !== null} onOpenChange={() => setMeditationToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar sesión completada?</AlertDialogTitle>
-            <AlertDialogDescription>
-              ¿Estás seguro de que quieres eliminar esta sesión de meditación del historial?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteMeditationSession}>Eliminar</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
 
       {/* Dialog para detalles de sueño */}
       <Dialog open={showSleepDetails !== null} onOpenChange={() => setShowSleepDetails(null)}>
@@ -1352,20 +1420,21 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       </Dialog>
 
       {/* Dialog para confirmar eliminación de registro de sueño */}
-      <AlertDialog open={sleepToDelete !== null} onOpenChange={() => setSleepToDelete(null)}>
+      <AlertDialog open={showSleepConfirm} onOpenChange={() => setShowSleepConfirm(false)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar registro de sueño?</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Estás seguro de que quieres eliminar este registro de sueño?
+              ¿Estás seguro de que quieres eliminar  asdasd este registro de sueño?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteSleepEntry}>Eliminar</AlertDialogAction>
+            <AlertDialogCancel onClick={() => setSleepToDelete(null)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => sleepToDelete !== null && borrarSueño(sleepToDelete)}>Eliminar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
     </div>
   );
 };

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock, User, Eye, EyeOff, Apple, Target, Heart, CheckCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useFetcher } from 'react-router-dom';
+import axios from 'axios';
 
 interface LoginPageProps {
   onLogin: (email: string) => void;
@@ -19,9 +21,29 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
     email: '',
     password: '',
     confirmPassword: '',
+    age: '',
     name: '',
-    document: ''
+    document: '',
   });
+
+// Obtener listado de usuarios
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/users")
+      .then(res => {
+        console.log("Listado de usuarios", res);
+      });
+  }, []);
+
+  // Función para hacer login
+  const loginUser = () => {
+    axios.post("http://localhost:3000/api/users/login", {
+      email: formData.email,
+      password: formData.password,
+    }).then(res => {
+      console.log("Usuario logueado", res);
+    });
+  };
+
 
   const validatePassword = (password: string) => {
     const minLength = password.length >= 8;
@@ -283,7 +305,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                       Edad
                     </Label>
                     <p className="text-xs text-muted-foreground mb-1">
-                      Tu edad en años para personalizar recomendaciones
+                      Tu edad en años
                     </p>
                     <Input
                       id="age"
@@ -316,29 +338,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                   </div>
                 </div>
 
-                {selectedProfile === 'admin' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="document" className="text-sm font-medium">
-                      Documento de identidad
-                    </Label>
-                    <p className="text-xs text-muted-foreground mb-1">
-                      Número de cédula o documento de identificación oficial
-                    </p>
-                    <div className="relative">
-                      <Target className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                      <Input
-                        id="document"
-                        type="text"
-                        placeholder="Número de documento"
-                        value={formData.document}
-                        onChange={(e) => handleInputChange('document', e.target.value)}
-                        className="pl-10"
-                        required={selectedProfile === 'admin'}
-                      />
-                    </div>
-                  </div>
-                )}
-
+            
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium">
                     Contraseña
@@ -403,6 +403,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                 <Button
                   type="submit"
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={loginUser}
                 >
                   {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
                 </Button>
@@ -415,7 +416,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                   onClick={() => {
                     setIsLogin(!isLogin);
                     setSelectedProfile(null);
-                    setFormData({ email: '', password: '', confirmPassword: '', name: '', document: '' });
+                    setFormData({ email: '', password: '', confirmPassword: '', age: '', name: '', document: '' });
                   }}
                   className="text-sm text-primary hover:text-primary/80 transition-colors"
                 >

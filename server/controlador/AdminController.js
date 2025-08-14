@@ -1,53 +1,67 @@
-const UserModel = require('../modelo/usersModel');
+const pool = require('./bd/Conexion');
+const bcrypt = require('bcrypt');
 
-class UserController {
-  static async getAll(req, res) {
+class UserModel {
+  static async getAll() {
     try {
-      const users = await UserModel.getAll();
-      res.json(users);
+      const [rows] = await pool.query('SELECT * FROM users');
+      return rows;
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      throw error;
     }
   }
 
-  static async getById(req, res) {
+  static async getById(id) {
     try {
-      const user = await UserModel.getById(req.params.id);
-      if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado' });
+      const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+      return rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async create(user) {
+    try {
+      // Encriptar la contraseña antes de guardar
+      const saltRounds = 10; // Nivel de complejidad
+      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+
+      // Reemplazamos la contraseña original por la encriptada
+      const userWithHashedPassword = {
+        ...user,
+        password: hashedPassword
+      };
+
+      const [result] = await pool.query('INSERT INTO users SET ?', userWithHashedPassword);
+      return { id: result.insertId, ...userWithHashedPassword };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async update(id, user) {
+    try {
+      // Si en el update viene una contraseña, la encriptamos también
+      if (user.password) {
+        const saltRounds = 10;
+        user.password = await bcrypt.hash(user.password, saltRounds);
       }
-      res.json(user);
+
+      await pool.query('UPDATE users SET ? WHERE id = ?', [user, id]);
+      return { id, ...user };
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      throw error;
     }
   }
 
-  static async create(req, res) {
+  static async delete(id) {
     try {
-      const newUser = await UserModel.create(req.body);
-      res.status(201).json(newUser);
+      await pool.query('DELETE FROM users WHERE id = ?', [id]);
+      return { message: 'Usuario eliminado correctamente' };
     } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-
-  static async update(req, res) {
-    try {
-      const updatedUser = await UserModel.update(req.params.id, req.body);
-      res.json(updatedUser);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-
-  static async delete(req, res) {
-    try {
-      const result = await UserModel.delete(req.params.id);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+      throw error;
     }
   }
 }
 
-module.exports = UserController;
+module.exports = UserModel;
