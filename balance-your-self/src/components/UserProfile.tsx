@@ -67,26 +67,19 @@ const UserProfile = ({ onBack, currentUser }: UserProfileProps) => {
 
 // Llamada a la API para obtener los usuarios
   useEffect(() => {
-    axios.get("http://localhost:3000/api/users")
+    // axios.get("http://localhost:3000/api/users")
+    //   .then(res => {
+    //     console.log("Listado de usuarios registrados", res);
+    //   });
+
+    axios.get(`http://localhost:3000/api/users/email/${currentUser}`)
       .then(res => {
-        console.log("Listado de usuarios registrados", res);
+        setProfileData(prev => ({ ...prev, ...res.data }));
+        console.log("Usuario encontrado", res);
       });
-  }, []);
+  }, [currentUser]  );
 
 
-  const guardarUsers = () => {
-    axios.post("http://localhost:3000/api/users", {
-      name: profileData.name,
-      email: profileData.email,
-      phone: profileData.phone,
-      location: profileData.location,
-      goal: profileData.goal,
-      bio: profileData.bio,
-      joinDate: profileData.joinDate
-    }).then(res => {
-      console.log("Usuario guardado", res);
-    });
-  };
 
   return (
     <div className="space-y-6">

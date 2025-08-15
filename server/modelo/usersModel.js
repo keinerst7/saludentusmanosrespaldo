@@ -25,6 +25,15 @@ class UserModel {
     }
   }
 
+  static async getByEmail(email) {
+    try {
+      const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+      return rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async create(user) {
     try {
       // Encriptar la contraseña antes de guardar

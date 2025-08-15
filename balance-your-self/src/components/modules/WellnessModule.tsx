@@ -177,6 +177,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
     }
   };
 
+  // Consejos para dormir
   const getSleepTip = (hours: number, quality: number) => {
     if (hours < 6) {
       return "💤 Intenta dormir al menos 7-8 horas. Tu cuerpo necesita más descanso para recuperarse completamente.";
@@ -264,7 +265,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       setCurrentSession(null);
       setSessionTime(0);
 
-      // METODO POST PARA REGISTRAR SESION DE MEDITACION
+      // METODO POST PARA REGISTRAR SESION DE MEDITACION (MEDITATIONS)
       axios.post('http://localhost:3000/api/completed-meditations', {
         user_id: 2,
         meditation_id: currentSession.id,
@@ -416,7 +417,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const guardarSueño = () => {
     axios.post('http://localhost:3000/api/sleep', {
       "user_id": 2,
-      "date": "2025-08-09",
+      "date": "2025-15-09",
       "hours": sleepHours,
       "quality": sleepQuality,
       "note": sleepNote,
@@ -425,7 +426,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       setSleepEntries([{
         id: res.data.id,
         // user_id: 2,
-        date: "2025-08-09",
+        date: "2025-15-09",
         hours: parseFloat(sleepHours),
         quality: sleepQuality,
         note: sleepNote,

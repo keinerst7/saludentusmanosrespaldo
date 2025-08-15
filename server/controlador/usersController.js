@@ -21,7 +21,6 @@ class UserController {
         return res.status(400).json({ error: "Email y contraseña son obligatorios" });
       }
 
-      
       // Buscar usuario por email
       const user = await UserModel.getByEmail(email);
       // return res.status(200).json({ message: "Login exitoso" });
@@ -54,6 +53,20 @@ class UserController {
   static async getById(req, res) {
     try {
       const user = await UserModel.getById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getByEmail(req, res) {
+    const { email } = req.params;
+    console.log("Buscando usuario por email:", email);
+    try {
+      const user = await UserModel.getByEmail(email); // <-- usa directamente el parámetro
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }

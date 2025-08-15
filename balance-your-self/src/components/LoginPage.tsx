@@ -34,16 +34,25 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
       });
   }, []);
 
-  // Función para hacer login
-  const loginUser = () => {
-    axios.post("http://localhost:3000/api/users/login", {
-      email: formData.email,
-      password: formData.password,
-    }).then(res => {
-      console.log("Usuario logueado", res);
-    });
-  };
 
+  // Función para hacer login
+const loginUser = (e) => {
+  e.preventDefault();
+  axios.post("http://localhost:3000/api/users/login", {
+    email: formData.email,
+    password: formData.password,
+  }).then(res => {
+    if (res.data && res.data.user) {
+      // Usuario válido, permite acceso
+      onLogin(res.data.user.email);
+    } else {
+      // Usuario no encontrado o credenciales incorrectas
+      alert("Correo o contraseña incorrectos. Intenta nuevamente.");
+    }
+  }).catch(() => {
+    alert("Error al iniciar sesión. Verifica tus datos.");
+  });
+};
 
   const validatePassword = (password: string) => {
     const minLength = password.length >= 8;
@@ -105,21 +114,14 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
         alert('Por favor, ingresa tu nombre completo');
         return;
       }
-      if (selectedProfile === 'admin' && !formData.document) {
-        alert('Por favor, ingresa tu número de documento');
-        return;
-      }
     } else {
       // Para login de administrador, se requiere documento
-      if (selectedProfile === 'admin' && !formData.document) {
-        alert('Para administradores se requiere número de documento');
-        return;
-      }
+      
     }
 
     // Simulación del login/registro
     const username = formData.name || formData.email.split('@')[0];
-    onLogin(username);
+   onLogin(formData.email);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -403,7 +405,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                 <Button
                   type="submit"
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
-                  onClick={loginUser}
+                  onClick={(e) => loginUser(e)}
                 >
                   {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
                 </Button>

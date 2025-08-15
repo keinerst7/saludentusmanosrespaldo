@@ -4,6 +4,7 @@ const UserController = require('../controlador/usersController');
 
 router.get('/', UserController.getAll);
 router.get('/:id', UserController.getById);
+router.get('/email/:email', UserController.getByEmail);
 router.post('/login', UserController.login);
 router.post('/', UserController.create);
 router.put('/:id', UserController.update);
