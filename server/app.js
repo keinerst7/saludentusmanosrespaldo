@@ -29,6 +29,7 @@ app.use(cors({
 
 
 // Rutas
+app.use("/moods", moodRoutes);
 app.use('/', indexDia);
 app.use('/api/users', userRoutes);
 app.use('/api/moods', moodRoutes);
