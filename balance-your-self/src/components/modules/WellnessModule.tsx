@@ -417,7 +417,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const guardarSueño = () => {
     axios.post('http://localhost:3000/api/sleep', {
       "user_id": 2,
-      "date": "2025-15-09",
+      "date": "2025-23-08",
       "hours": sleepHours,
       "quality": sleepQuality,
       "note": sleepNote,
@@ -426,7 +426,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
       setSleepEntries([{
         id: res.data.id,
         // user_id: 2,
-        date: "2025-15-09",
+        date: "2025-23-08",
         hours: parseFloat(sleepHours),
         quality: sleepQuality,
         note: sleepNote,
@@ -453,7 +453,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const guardarMood = () => {
     axios.post('http://localhost:3000/api/moods', {
       "user_id":2,
-      "date": "2025-08-22",
+      "date": "2025-08-23",
       "mood": currentMood,
       "stress": currentStress,
       "energy": currentEnergy,

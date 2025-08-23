@@ -1,44 +1,49 @@
+// Importamos el modelo de usuarios, encargado de interactuar con la base de datos
 const UserModel = require('../modelo/usersModel');
+
+// Importamos bcrypt para manejar el hash y comparación de contraseñas
 const bcrypt = require('bcrypt');
 
 class UserController {
+  // Obtener todos los usuarios
   static async getAll(req, res) {
     try {
-      const users = await UserModel.getAll();
-      res.json(users);
+      const users = await UserModel.getAll(); // Llama al modelo para traer todos los usuarios
+      res.json(users); // Devuelve los usuarios en formato JSON
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message }); // Manejo de errores
     }
   }
 
-  // Nuevo método para login
+  // Método para login de usuario
   static async login(req, res) {
     try {
-      const { email, password } = req.body;
+      const { email, password } = req.body; // Extraemos email y contraseña del body
 
-      // Validar que se envíen ambos campos
+      // Validamos que se envíen ambos campos
       if (!email || !password) {
         return res.status(400).json({ error: "Email y contraseña son obligatorios" });
       }
 
-      // Buscar usuario por email
+      // Buscamos al usuario por email
       const user = await UserModel.getByEmail(email);
-      // return res.status(200).json({ message: "Login exitoso" });
+
+      // Si no existe el usuario, devolvemos error de autenticación
       if (!user) {
         return res.status(401).json({ error: "Usuario o contraseña incorrectos" });
       }
 
-      // Comparar contraseñas
+      // Comparamos la contraseña ingresada con la almacenada (encriptada) en la BD
       const isMatch = await bcrypt.compare(password, user.password);
-      console.log(isMatch);
+      console.log(isMatch); // Solo para debug (no recomendable en producción)
+
       if (!isMatch) {
         return res.status(401).json({ error: "Usuario o contraseña incorrectos" });
       }
 
-            // Devolver respuesta
+      // Si todo es correcto, devolvemos un mensaje de éxito y datos del usuario
       res.status(200).json({
         message: "Login exitoso",
-    
         user: {
           id: user.id,
           name: user.name,
@@ -46,13 +51,14 @@ class UserController {
         }
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message }); // Manejo de errores
     }
   }
 
+  // Obtener usuario por ID
   static async getById(req, res) {
     try {
-      const user = await UserModel.getById(req.params.id);
+      const user = await UserModel.getById(req.params.id); // Busca en BD por ID
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
@@ -62,11 +68,12 @@ class UserController {
     }
   }
 
+  // Obtener usuario por Email
   static async getByEmail(req, res) {
     const { email } = req.params;
-    console.log("Buscando usuario por email:", email);
+    console.log("Buscando usuario por email:", email); // Log para depuración
     try {
-      const user = await UserModel.getByEmail(email); // <-- usa directamente el parámetro
+      const user = await UserModel.getByEmail(email);
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
@@ -76,15 +83,17 @@ class UserController {
     }
   }
 
+  // Crear un nuevo usuario
   static async create(req, res) {
     try {
-      const newUser = await UserModel.create(req.body);
-      res.status(201).json(newUser);
+      const newUser = await UserModel.create(req.body); // Inserta usuario en la BD
+      res.status(201).json(newUser); // Devuelve el usuario creado con status 201
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
+  // Actualizar un usuario existente
   static async update(req, res) {
     try {
       const updatedUser = await UserModel.update(req.params.id, req.body);
@@ -94,6 +103,7 @@ class UserController {
     }
   }
 
+  // Eliminar un usuario por ID
   static async delete(req, res) {
     try {
       const result = await UserModel.delete(req.params.id);
@@ -104,4 +114,5 @@ class UserController {
   }
 }
 
+// Exportamos la clase para poder usarla en las rutas
 module.exports = UserController;
