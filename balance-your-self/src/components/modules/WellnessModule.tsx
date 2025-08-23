@@ -453,15 +453,22 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const guardarMood = () => {
     axios.post('http://localhost:3000/api/moods', {
       "user_id":2,
-      //"date": "2025-08-09",
+      "date": "2025-08-22",
       "mood": currentMood,
       "stress": currentStress,
       "energy": currentEnergy,
       "note": moodNote,
-    }).then(res =>
+    }).then(res =>{
+
+      enviarCorreo()
       console.log("guardado: ", res)
+
+    }
+
+      //aqui llamar
     )
   }
+
 
   // 2. METODO DELETE PARA BORRAR ESTADOS DE ANIMO
   const borrarMood = (id: number) => {
@@ -482,6 +489,19 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
         console.log("borrado: ", res)
       );
     setCompletedMeditations(completedMeditations.filter(entry => entry.id !== id));
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////////////
+  // METODO POST PARA ENVIAR CORREO
+  const enviarCorreo = () => {
+    axios.post('http://localhost:3000/api/correo/enviar', {
+      "destinatario": "keinerarenas77@gmail.com",
+      "asunto": "Estado de ánimo registrado",
+      "cuerpo": `Se ha registrado un nuevo estado de ánimo: ${currentMood}`
+    }).then(res =>
+      console.log("Correo enviado: ", res)
+    )
   }
 
 

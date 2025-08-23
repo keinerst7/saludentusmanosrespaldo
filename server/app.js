@@ -8,6 +8,7 @@ const indexDia = require('./router/indexdia');
 const userRoutes = require('./router/usersRuta');
 const moodRoutes = require('./router/moodRuta');
 const sleepRoutes = require('./router/sleepRuta');
+const emailRoutes = require('./router/emailRutas');
 const meditationRoutes = require('./router/meditationRuta');
 const completedMeditationsRoutes = require('./router/completedMeditationsRuta');
 
@@ -36,6 +37,7 @@ app.use('/api/moods', moodRoutes);
 app.use('/api/sleep', sleepRoutes);
 app.use('/api/meditations', meditationRoutes);
 app.use('/api/completed-meditations', completedMeditationsRoutes);
+app.use('/api/correo', emailRoutes);
 
 
 // Exportar app para testing
