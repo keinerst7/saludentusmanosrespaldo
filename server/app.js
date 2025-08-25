@@ -38,7 +38,6 @@ app.use(express.urlencoded({ extended: true }));     // Permite leer datos de fo
 // -------------------- Rutas --------------------
 
 // Definimos los prefijos y sus respectivos enrutadores
-app.use("/moods", moodRoutes);                       // Maneja rutas de moods (duplicada más abajo con /api/moods)
 app.use('/', indexDia);                              // Ruta principal
 app.use('/api/users', userRoutes);                   // Rutas de usuarios
 app.use('/api/moods', moodRoutes);                   // Rutas de moods (versión con /api)

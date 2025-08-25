@@ -50,6 +50,8 @@ class SleepController {
     }
   }
 
+
+  // tomar pantallazo para QA
   // Actualizar un registro existente de sueño
   static async update(req, res) {
     try {

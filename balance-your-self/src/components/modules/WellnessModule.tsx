@@ -37,7 +37,8 @@ import {
   Target,
   Star,
   Eye,
-  Clock
+  Clock,
+  TrendingUp
 } from 'lucide-react';
 import MotivationTab from './MotivationTab';
 import axios from "axios";
@@ -453,7 +454,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const guardarMood = () => {
     axios.post('http://localhost:3000/api/moods', {
       "user_id":2,
-      "date": "2025-08-23",
+      "date": "2025-08-25",
       "mood": currentMood,
       "stress": currentStress,
       "energy": currentEnergy,
@@ -992,83 +993,79 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
           </div>
         </TabsContent>
 
-        {/* Historial General */}
-        <TabsContent value="journal" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Resumen de actividades */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Resumen de Actividades
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 bg-primary/10 rounded-lg">
-                    <div className="text-lg font-bold text-primary">{moodEntries.length}</div>
-                    <div className="text-xs text-muted-foreground">Estados registrados</div>
-                  </div>
-                  <div className="text-center p-3 bg-accent/10 rounded-lg">
-                    <div className="text-lg font-bold text-accent">{completedMeditations.length}</div>
-                    <div className="text-xs text-muted-foreground">Meditaciones</div>
-                  </div>
-                  <div className="text-center p-3 bg-accent-light/10 rounded-lg">
-                    <div className="text-lg font-bold text-accent-light">{sleepEntries.length}</div>
-                    <div className="text-xs text-muted-foreground">Registros de sueño</div>
-                  </div>
-                  <div className="text-center p-3 bg-secondary/30 rounded-lg">
-                    <div className="text-lg font-bold text-accent">8.2</div>
-                    <div className="text-xs text-muted-foreground">Promedio ánimo</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Progreso semanal */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Progreso Semanal
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm">Estados de ánimo</span>
-                      <span className="text-sm">7/7</span>
-                    </div>
-                    <Progress value={100} className="h-2" />
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm">Sesiones de meditación</span>
-                      <span className="text-sm">5/7</span>
-                    </div>
-                    <Progress value={71} className="h-2" />
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm">Registros de sueño</span>
-                      <span className="text-sm">6/7</span>
-                    </div>
-                    <Progress value={86} className="h-2" />
-                  </div>
-                </div>
-
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <p className="text-sm text-green-700">
-                    🎉 ¡Excelente semana! Mantén el equilibrio entre descanso y actividad mental.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+{/* Historial General */}
+<TabsContent value="journal" className="space-y-6">
+  <div className="flex justify-center mb-8">
+    {/* Resumen de actividades - Centrado */}
+    <Card className="w-full max-w-2xl shadow-xl bg-gradient-to-br from-card to-card/95 border-0">
+      <CardHeader className="text-center pb-4">
+        <CardTitle className="flex items-center justify-center gap-3 text-2xl font-bold">
+          <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+            <BarChart3 className="w-5 h-5 text-primary" />
           </div>
-        </TabsContent>
+          Resumen de Actividades
+        </CardTitle>
+        <p className="text-muted-foreground text-sm mt-2">
+          Tu progreso integral de bienestar
+        </p>
+      </CardHeader>
+      <CardContent className="px-8 pb-8">
+        <div className="grid grid-cols-2 gap-6">
+          {/* Estados registrados */}
+          <div className="text-center p-6 bg-gradient-to-br from-primary/5 to-primary/15 rounded-xl border border-primary/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Heart className="w-6 h-6 text-primary" />
+            </div>
+            <div className="text-3xl font-bold text-primary mb-2">{moodEntries.length}</div>
+            <div className="text-sm font-medium text-muted-foreground">Estados registrados</div>
+            <div className="w-16 h-1 bg-primary/30 rounded-full mx-auto mt-3"></div>
+          </div>
+
+          {/* Meditaciones */}
+          <div className="text-center p-6 bg-gradient-to-br from-accent/5 to-accent/15 rounded-xl border border-accent/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Brain className="w-6 h-6 text-accent" />
+            </div>
+            <div className="text-3xl font-bold text-accent mb-2">{completedMeditations.length}</div>
+            <div className="text-sm font-medium text-muted-foreground">Meditaciones</div>
+            <div className="w-16 h-1 bg-accent/30 rounded-full mx-auto mt-3"></div>
+          </div>
+
+          {/* Registros de sueño */}
+          <div className="text-center p-6 bg-gradient-to-br from-accent-light/5 to-accent-light/15 rounded-xl border border-accent-light/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="w-12 h-12 bg-accent-light/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Moon className="w-6 h-6 text-accent-light" />
+            </div>
+            <div className="text-3xl font-bold text-accent-light mb-2">{sleepEntries.length}</div>
+            <div className="text-sm font-medium text-muted-foreground">Registros de sueño</div>
+            <div className="w-16 h-1 bg-accent-light/30 rounded-full mx-auto mt-3"></div>
+          </div>
+
+          {/* Promedio ánimo */}
+          <div className="text-center p-6 bg-gradient-to-br from-emerald-500/5 to-emerald-500/15 rounded-xl border border-emerald-500/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <TrendingUp className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div className="text-3xl font-bold text-emerald-600 mb-2">8.2</div>
+            <div className="text-sm font-medium text-muted-foreground">Promedio ánimo</div>
+            <div className="w-16 h-1 bg-emerald-500/30 rounded-full mx-auto mt-3"></div>
+          </div>
+        </div>
+
+        {/* Indicador de progreso general */}
+        <div className="mt-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full">
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-primary">¡Mantén el buen ritmo!</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+
+  {/* Resto del contenido del tab */}
+  {/* ... aquí va el resto del código ... */}
+</TabsContent>
 
         {/* Nueva pestaña de Motivación */}
         <TabsContent value="motivation" className="space-y-6">

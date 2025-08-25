@@ -15,7 +15,6 @@ interface LoginPageProps {
 const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState<'user' | 'admin' | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -23,7 +22,6 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
     confirmPassword: '',
     age: '',
     name: '',
-    document: '',
   });
 
 // Obtener listado de usuarios
@@ -102,10 +100,6 @@ const loginUser = (e) => {
     }
 
     if (!isLogin) {
-      if (!selectedProfile) {
-        alert('Por favor, selecciona un tipo de perfil');
-        return;
-      }
       if (formData.password !== formData.confirmPassword) {
         alert('Las contraseñas no coinciden');
         return;
@@ -114,9 +108,6 @@ const loginUser = (e) => {
         alert('Por favor, ingresa tu nombre completo');
         return;
       }
-    } else {
-      // Para login de administrador, se requiere documento
-      
     }
 
     // Simulación del login/registro
@@ -182,70 +173,12 @@ const loginUser = (e) => {
           </Card>
         )}
 
-        {/* Selección de tipo de perfil */}
-        {acceptedTerms && !isLogin && !selectedProfile && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-foreground mb-2">
-                Selecciona tu tipo de perfil
-              </h3>
-              <p className="text-muted-foreground">
-                Elige el tipo de cuenta que mejor se adapte a ti
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Perfil Usuario */}
-              <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-primary/30 hover:border-primary/50 cursor-pointer bg-gradient-to-br from-primary/10 to-primary-light/20">
-                <CardContent className="p-8 text-center space-y-6">
-                  <div className="mx-auto w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors">
-                    <User className="w-10 h-10 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-primary mb-2">Usuario</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Perfil para usuarios que desean gestionar su bienestar personal
-                    </p>
-                    <Button
-                      onClick={() => setSelectedProfile('user')}
-                      className="w-full bg-primary hover:bg-primary/90"
-                    >
-                      Seleccionar perfil
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Perfil Administrador */}
-              <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-accent/30 hover:border-accent/50 cursor-pointer bg-gradient-to-br from-accent/10 to-accent-light/20">
-                <CardContent className="p-8 text-center space-y-6">
-                  <div className="mx-auto w-20 h-20 bg-accent/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-accent/30 transition-colors">
-                    <Target className="w-10 h-10 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-accent mb-2">Administrador</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Perfil con permisos adicionales para gestión avanzada
-                    </p>
-                    <Button
-                      onClick={() => setSelectedProfile('admin')}
-                      className="w-full bg-accent hover:bg-accent/90"
-                    >
-                      Seleccionar perfil
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {/* Card de login/registro */}
-        {acceptedTerms && (isLogin || selectedProfile) && (
+        {/* Card de login/registro - Solo para usuarios */}
+        {acceptedTerms && (
           <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl text-foreground">
-                {isLogin ? 'Bienvenido' : `Crear Cuenta - ${selectedProfile === 'user' ? 'Usuario' : 'Administrador'}`}
+                {isLogin ? 'Bienvenido' : 'Crear Cuenta'}
               </CardTitle>
               <CardDescription>
                 {isLogin 
@@ -255,28 +188,6 @@ const loginUser = (e) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Selector de perfil para login */}
-              {isLogin && (
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    type="button"
-                    variant={selectedProfile === 'user' ? 'default' : 'outline'}
-                    onClick={() => setSelectedProfile('user')}
-                    className="text-sm"
-                  >
-                    Usuario
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={selectedProfile === 'admin' ? 'default' : 'outline'}
-                    onClick={() => setSelectedProfile('admin')}
-                    className="text-sm"
-                  >
-                    Administrador
-                  </Button>
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-4">
                 {!isLogin && (
                   <div className="space-y-2">
@@ -301,7 +212,7 @@ const loginUser = (e) => {
                   </div>
                 )}
 
-                {!isLogin && selectedProfile === 'user' && (
+                {!isLogin && (
                   <div className="space-y-2">
                     <Label htmlFor="age" className="text-sm font-medium">
                       Edad
@@ -315,6 +226,8 @@ const loginUser = (e) => {
                       placeholder="Tu edad"
                       min="13"
                       max="120"
+                      value={formData.age}
+                      onChange={(e) => handleInputChange('age', e.target.value)}
                     />
                   </div>
                 )}
@@ -340,7 +253,6 @@ const loginUser = (e) => {
                   </div>
                 </div>
 
-            
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium">
                     Contraseña
@@ -411,24 +323,22 @@ const loginUser = (e) => {
                 </Button>
               </form>
             </CardContent>
-            {(isLogin || selectedProfile) && (
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsLogin(!isLogin);
-                    setSelectedProfile(null);
-                    setFormData({ email: '', password: '', confirmPassword: '', age: '', name: '', document: '' });
-                  }}
-                  className="text-sm text-primary hover:text-primary/80 transition-colors"
-                >
-                  {isLogin 
-                    ? '¿No tienes cuenta? Regístrate aquí'
-                    : '¿Ya tienes cuenta? Inicia sesión aquí'
-                  }
-                </button>
-              </div>
-            )}
+            
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setFormData({ email: '', password: '', confirmPassword: '', age: '', name: '' });
+                }}
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                {isLogin 
+                  ? '¿No tienes cuenta? Regístrate aquí'
+                  : '¿Ya tienes cuenta? Inicia sesión aquí'
+                }
+              </button>
+            </div>
 
             {isLogin && (
               <div className="text-center">
