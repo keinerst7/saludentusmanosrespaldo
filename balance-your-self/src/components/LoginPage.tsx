@@ -32,7 +32,6 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
       });
   }, []);
 
-
   // Función para hacer login
 const loginUser = (e) => {
   e.preventDefault();
@@ -173,7 +172,7 @@ const loginUser = (e) => {
           </Card>
         )}
 
-        {/* Card de login/registro - Solo para usuarios */}
+        {/* Card de login */}
         {acceptedTerms && (
           <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur">
             <CardHeader className="text-center">
@@ -324,33 +323,6 @@ const loginUser = (e) => {
               </form>
             </CardContent>
             
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setFormData({ email: '', password: '', confirmPassword: '', age: '', name: '' });
-                }}
-                className="text-sm text-primary hover:text-primary/80 transition-colors"
-              >
-                {isLogin 
-                  ? '¿No tienes cuenta? Regístrate aquí'
-                  : '¿Ya tienes cuenta? Inicia sesión aquí'
-                }
-              </button>
-            </div>
-
-            {isLogin && (
-              <div className="text-center">
-                <button
-                  type="button"
-                  className="text-sm text-primary hover:text-primary/80 transition-colors underline"
-                >
-                  ¿Olvidaste tu contraseña? Ingresa aquí
-                </button>
-              </div>
-            )}
-
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 Al {isLogin ? 'iniciar sesión' : 'registrarte'}, aceptas nuestros términos de servicio

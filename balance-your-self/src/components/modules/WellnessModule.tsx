@@ -136,6 +136,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   const [showSleepConfirm, setShowSleepConfirm] = useState(false);
   const [showSleepSuccess, setShowSleepSuccess] = useState(false);
   const [showMoodConfirm, setShowMoodConfirm] = useState(false);
+  const [showMoodSuccess, setShowMoodSuccess] = useState(false);
   const [showWellnessSummary, setShowWellnessSummary] = useState(false);
   const [showWellnessAnalysis, setShowWellnessAnalysis] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -268,7 +269,7 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
 
       // METODO POST PARA REGISTRAR SESION DE MEDITACION (MEDITATIONS)
       axios.post('http://localhost:3000/api/completed-meditations', {
-        user_id: 2,
+        user_id: 37,
         meditation_id: currentSession.id,
         completed_date: completedSession.completedDate,
         duration: currentSession.duration
@@ -417,8 +418,8 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   // Función para guardar el sueño
   const guardarSueño = () => {
     axios.post('http://localhost:3000/api/sleep', {
-      "user_id": 2,
-      "date": "2025-23-08",
+      "user_id": 37,
+      "date": "2025-25-08",
       "hours": sleepHours,
       "quality": sleepQuality,
       "note": sleepNote,
@@ -450,25 +451,50 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
   ///////////////////////////////////////////////////////////////////////////////////////
   // METODOS PARA ESTADOS DE ANIMO
   // 1. METODOS POST PARA GUARDAR EL ESTADO DE ANIMO
-  // Función para guardar el estado de ánimo
-  const guardarMood = () => {
-    axios.post('http://localhost:3000/api/moods', {
-      "user_id":2,
-      "date": "2025-08-25",
-      "mood": currentMood,
-      "stress": currentStress,
-      "energy": currentEnergy,
-      "note": moodNote,
-    }).then(res =>{
-
-      enviarCorreo()
-      console.log("guardado: ", res)
-
-    }
-
-      //aqui llamar
-    )
-  }
+// Función para guardar el estado de ánimo
+const guardarMood = () => {
+  // Obtener la fecha actual en formato correcto
+  const currentDate = new Date().toISOString().split('T')[0];
+  
+  axios.post('http://localhost:3000/api/moods', {
+    "user_id": 37,
+    "date": currentDate, // Usar fecha actual en lugar de hardcoded
+    "mood": currentMood,
+    "stress": currentStress,
+    "energy": currentEnergy,
+    "note": moodNote,
+  }).then(res => {
+    enviarCorreo();
+    console.log("guardado: ", res);
+    
+    // Crear el nuevo registro con datos reales
+    const newMoodEntry: MoodEntry = {
+      id: res.data.id,
+      date: res.data.date || currentDate,
+      mood: currentMood,
+      stress: currentStress,
+      energy: currentEnergy,
+      note: moodNote,
+      triggers: res.data.triggers ?? [], // Usa triggers de la respuesta o array vacío
+    };
+    
+    // Agregar inmediatamente al estado para que aparezca visualmente
+    setMoodEntries([newMoodEntry, ...moodEntries]); // Asume que tienes un estado moodEntries
+    
+    // Limpiar los campos del formulario (opcional)
+    setCurrentMood(3);
+    setCurrentStress(3);
+    setCurrentEnergy(3);
+    setMoodNote('');
+    
+    // Mostrar dialog de confirmación
+    setShowMoodSuccess(true);
+    
+  }).catch(error => {
+    console.error("Error al guardar estado de ánimo:", error);
+    alert('❌ Error al guardar el registro de estado de ánimo');
+  });
+}
 
 
   // 2. METODO DELETE PARA BORRAR ESTADOS DE ANIMO
@@ -1073,21 +1099,24 @@ const WellnessModule = ({ onBack }: WellnessModuleProps) => {
         </TabsContent>
       </Tabs>
 
-      {/* Dialog de confirmación para registro de estado de ánimo */}
-      <AlertDialog open={showMoodConfirm} onOpenChange={setShowMoodConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Deseas registrar tu estado?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Estado: {getMoodText(currentMood)} • Estrés: {currentStress}/5 • Energía: {currentEnergy}/5
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar Registro</AlertDialogCancel>
-            <AlertDialogAction onClick={handleMoodRegistration}>Registrar</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+     {/* Dialog de confirmación para registro exitoso de estado de ánimo */}
+<Dialog open={showMoodSuccess} onOpenChange={setShowMoodSuccess}>
+  <DialogContent className="max-w-md text-center">
+    <DialogHeader>
+      <DialogTitle className="text-xl">✅ ¡Registro de Estado de Ánimo Exitoso!</DialogTitle>
+    </DialogHeader>
+    <div className="py-4">
+      <p className="text-sm text-muted-foreground">
+        Tu registro de estado de ánimo ha sido guardado correctamente y ya está disponible en tu historial.
+      </p>
+    </div>
+    <DialogFooter>
+      <Button onClick={() => setShowMoodSuccess(false)} className="w-full">
+        Continuar
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
 
       {/* Dialog de confirmación para finalizar meditación */}
       <AlertDialog open={showMeditationConfirm} onOpenChange={setShowMeditationConfirm}>

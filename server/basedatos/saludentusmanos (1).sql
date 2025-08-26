@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-08-2025 a las 17:28:59
+-- Tiempo de generación: 26-08-2025 a las 01:46:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -42,7 +42,10 @@ CREATE TABLE `completed_meditations` (
 
 INSERT INTO `completed_meditations` (`id`, `user_id`, `duration`, `meditation_id`, `completed_date`, `completed_at`) VALUES
 (14, 2, 5, 1, '2025-08-15', '2025-08-15 04:47:43'),
-(15, 2, 5, 1, '2025-08-15', '2025-08-15 14:28:11');
+(16, 2, 5, 2, '2025-08-15', '2025-08-25 19:48:48'),
+(17, 2, 7, 5, '2025-08-25', '2025-08-25 19:57:25'),
+(18, 2, 7, 5, '2025-08-25', '2025-08-25 19:58:38'),
+(19, 2, 6, 6, '2025-08-25', '2025-08-25 20:00:11');
 
 -- --------------------------------------------------------
 
@@ -92,9 +95,9 @@ CREATE TABLE `mood_entries` (
 --
 
 INSERT INTO `mood_entries` (`id`, `user_id`, `date`, `mood`, `stress`, `energy`, `note`, `created_at`) VALUES
-(83, 2, '0000-00-00', 4, 4, 4, 'Estuve muy feliz', '2025-08-15 04:46:41'),
-(85, 2, '0000-00-00', 1, 1, 1, 'TO bien', '2025-08-15 14:25:51'),
-(86, 2, '0000-00-00', 3, 3, 3, 'cdmc', '2025-08-15 14:26:41');
+(83, 2, '2025-08-25', 5, 5, 5, 'Muy feliz y contento de mi dia', '2025-08-25 09:00:00'),
+(94, 2, '0000-00-00', 1, 1, 1, 'Muy bajado de animos, no cumpli mis tareas', '2025-08-25 02:32:44'),
+(95, 2, '2025-08-26', 5, 5, 5, 'Super feliz con mi estado de animo de este dia', '2025-08-23 09:37:00');
 
 -- --------------------------------------------------------
 
@@ -178,7 +181,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `id_rol`, `name`, `email`, `password`, `document`, `phone`, `location`, `age`, `goal`, `bio`, `joinDate`, `state`) VALUES
 (2, 1, 'Sebastian', 'sebas12@gmail.com', '$2b$10$wtTfkmsVbE6/n8EJ9VdE8u95i8czOrtMyFYKeiQUGnrjqJX0CCbtmtmtm', '10222222', '+573222334455', 'Bello', 28, 'Estilo de vida moderado', 'Comprometido con mi bienestar mental y general', '2025-08-09', 'Activo'),
 (27, 1, 'Luis Diaz', 'andres@gmail.com', '$2b$10$DdaVCw3Xjd9c10W7DFgAPOw8Q2LPf1k2bFGHDtVR2MNFaff0gIvw.', '10252626', '30024786767', 'Bello', 20, 'Estilo de vida estable y de buenos habitos', 'Comprometido con mi bienestar mental y general', '2025-08-13', 'Activo'),
-(32, 2, 'David Cano', 'David22@gmail.com', '$2b$10$zoqY2yhDkoP4AXggCsseeuA0xPp9opyU9/QnAB27XRp7vCWNBauu2', '1035464646', '3023334444', 'Guatape', 19, 'Alncanzar paz interior', 'Alguien cuidadoso con su salud', '2025-08-15', 'Activo');
+(32, 1, 'David Cano', 'david22@gmail.com', '$2b$10$CVWukfkGDYLsaLLxQPCpZuQn5KDGgKqkSZRF/sAOe/45r9jnJXhru', '102525255', '3054445555', 'Niquia, Copacabana', 20, 'Estabilidad en mi salud general y mental', 'Alguien sociable y saludable de mentalidad', '2025-08-15', 'Activo'),
+(35, 1, 'Fray Rios', 'Fray99@gmail.com', '$2b$10$jI2oZY2vuvWmaYz0j8p/KOR64E8nHNzW54yIoTbA1/Vw4zkaBLRAO', '107676762', '3245956767', 'Guatape', 19, 'Alcanzar paz interior', 'Alguien cuidadoso con su salud', '2025-08-25', 'Activo');
 
 --
 -- Índices para tablas volcadas
@@ -244,7 +248,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `completed_meditations`
 --
 ALTER TABLE `completed_meditations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `meditation_sessions`
@@ -256,7 +260,7 @@ ALTER TABLE `meditation_sessions`
 -- AUTO_INCREMENT de la tabla `mood_entries`
 --
 ALTER TABLE `mood_entries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT de la tabla `mood_triggers`
@@ -274,13 +278,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `sleep_entries`
 --
 ALTER TABLE `sleep_entries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Restricciones para tablas volcadas
